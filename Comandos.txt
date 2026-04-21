@@ -44,3 +44,10 @@ kubectl get pods -n argocd
 # Si se ve el pod argocd-server en estado Running, ya puedes sacar la contraseña.
 $secret = kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}"
 [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($secret))
+
+# añadir el servidor que falta
+kubectl apply --server-side -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+# Sacar la contraseña para ingresar a ArgoCD por UI
+$secret = kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}"
+[System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($secret))
