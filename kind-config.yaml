@@ -8,6 +8,5 @@ nodes:
     nodeRegistration:
       kubeletExtraArgs:
         node-labels: "ingress-ready=true"
-    # Esto ayuda a saltar errores de cgroups en WSL2
     skipPhases:
       - addon/kube-proxy
