@@ -1,0 +1,34 @@
+# Instalar kind
+choco install kind
+
+# Instalar helm
+choco install kubernetes-helm
+
+# Crear el cluster de kind
+kind create cluster --name gitops-lab --config kind-config.yaml --image kindest/node:v1.27.3
+
+# Ejecuta este comando para confirmar que los nodos están listos
+kubectl get nodes
+
+# Crear el namespace del TFM
+kubectl create namespace tfm-app
+
+# Desplegar Nginx
+kubectl apply -f manifests/deployment.yaml
+
+# Comprobar que Nginx está corriendo
+kubectl get pods -n tfm-app
+
+# Crear el namespace de ArgoCD
+kubectl create namespace argocd
+
+# Instalar ArgoCD
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+# Esperar a que el servidor esté listo
+kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -n argocd
+
+# Ver el estado de todos los pods de ArgoCD
+kubectl get pods -n argocd
+
+#
