@@ -23,7 +23,7 @@ kubectl get pods -n tfm-app
 kubectl create namespace argocd
 
 # Instalar ArgoCD
-kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/core-install.yaml
 
 # Esperar a que el servidor esté listo
 kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -n argocd
@@ -31,4 +31,16 @@ kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -
 # Ver el estado de todos los pods de ArgoCD
 kubectl get pods -n argocd
 
-#
+# Reiniciar el despliegue de ArgoCD
+kubectl rollout restart statefulset argocd-application-controller -n argocd
+kubectl rollout restart deployment argocd-server argocd-repo-server argocd-redis -n argocd
+
+# Usando el modo "Server Side", que ignora el límite de anotaciones en el cliente
+kubectl apply --server-side -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+# Verificar que el servidor de la UI ya existe
+kubectl get pods -n argocd
+
+# Si se ve el pod argocd-server en estado Running, ya puedes sacar la contraseña.
+$secret = kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}"
+[System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($secret))
