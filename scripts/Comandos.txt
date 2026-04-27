@@ -47,3 +47,19 @@ $secret = kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="
 
 # añadir el servidor que falta
 kubectl apply --server-side -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+<<<<<<< HEAD:Comandos.txt
+=======
+
+# Sacar la contraseña para ingresar a ArgoCD por UI
+$secret = kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}"
+[System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($secret))
+
+# Si se hace un docker stop y se quiere levantar de nuevo primero se levanta el contenedor, luego se verifica el que los nodos esten listos
+kubectl get nodes
+
+# Esperamos a que los Pods de Argo se levanten
+kubectl get pods -n argocd
+
+# Se abre el nuevo puente ya que al hacer un reinicio los puentes no se mantienen abiertos
+kubectl port-forward svc/argocd-server -n argocd 8080:443
+>>>>>>> b53c2f4 (Fase 2 y Fase 3 TFM):scripts/Comandos.txt

@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nginx-demo
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/MVR-96/tfm-gitops-setup.git
+    targetRevision: HEAD
+    path: manifests         # Carpeta donde moviste el deployment.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: tfm-app      # Namespace destino para tu aplicación
+  syncPolicy:
+    automated:
+      prune: true           # Borra recursos si los quitas de Git
+      selfHeal: true        # Corrige cambios manuales automáticamente
+    syncOptions:
+      - CreateNamespace=true # Crea tfm-app si no existe
